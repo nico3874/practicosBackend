@@ -40,7 +40,8 @@ class ProductManager{
             try{
               const data = await fs.promises.readFile(this.path, "utf-8")
               const dataJson = JSON.parse(data)
-                console.log(dataJson)
+              console.log(dataJson)
+              return(dataJson) 
             }catch{
                 console.log("No hay productos en la base de datos.")
             }
@@ -102,17 +103,7 @@ newDB = new ProductManager
 newDB.addProduct('Red', 'red de futbol tenis', 50, 'sin imagen', 'abc500', 30)
 newDB.addProduct('Camiseta', 'camiseta de futbol', 150, 'sin imagen', 'abc556', 190)
 
-/* newDB.deleteProduct(1) */
-
-
-/* newDB.updateProduc(1, "code", "1111") */
-/* newDB.getProductById(1) */
-/* newDB.deleteProduct(1)
- */
-
-/* newDB.updateProduc(2, "code", "codnew4777") */
-
-
+module.exports = ProductManager
 
 
 
