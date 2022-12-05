@@ -40,7 +40,7 @@ app.get('/products/:id', async (req, res)=>{
     const data = await fs.promises.readFile('./DB.json', "utf-8")
     const dataJson = JSON.parse(data)
     const getId = req.params.id
-    getId ? res.send(dataJson.find(p=>p.id==getId)) : res.send(dataJson)
+    res.send(dataJson.find(p=>p.id==getId))
     
     
     })
