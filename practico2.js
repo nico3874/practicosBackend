@@ -98,10 +98,12 @@ class ProductManager{
 
 }
 
-newDB = new ProductManager
+const producsList = new ProductManager()
 
-newDB.addProduct('Red', 'red de futbol tenis', 50, 'sin imagen', 'abc500', 30)
-newDB.addProduct('Camiseta', 'camiseta de futbol', 150, 'sin imagen', 'abc556', 190)
+producsList.addProduct('disco rígido', 'disco sólido de 500gb', 8000, "Sin imagen",'abc111', 50 )
+producsList.addProduct('mouse inalambrico', 'mouse mara genius', 3000, "Sin imagen",'abc112', 40 )
+producsList.addProduct('Monitor', 'Monitor HD 24"', 35000, "Sin imagen",'abc113', 20 )
+producsList.addProduct('Teclado Gamer', 'teclado gamer Red Dragon', 5000, "Sin imagen",'abc114', 150 )
 
 module.exports = ProductManager
 

@@ -15,12 +15,7 @@ app.listen(8080, ()=>{
 
 
 
-const producsList = new ProductManager()
 
-producsList.addProduct('disco rígido', 'disco sólido de 500gb', 8000, "Sin imagen",'abc111', 50 )
-producsList.addProduct('mouse inalambrico', 'mouse mara genius', 3000, "Sin imagen",'abc112', 40 )
-producsList.addProduct('Monitor', 'Monitor HD 24"', 35000, "Sin imagen",'abc113', 20 )
-producsList.addProduct('Teclado Gamer', 'teclado gamer Red Dragon', 5000, "Sin imagen",'abc114', 150 )
 
     
 app.get('/products', async (req, res)=>{
