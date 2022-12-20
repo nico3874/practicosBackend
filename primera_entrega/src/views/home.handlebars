@@ -1,0 +1,16 @@
+<div>Hola changos...</div>
+{{#if products.length}}
+{{#each products}}
+    <div>
+        <h2>{{this.title}}</h2>
+        <ul>
+            <li>ID: {{this.id}}</li>
+            <li>Descrpción:{{this.description}}</li>
+            <li>Precio:{{this.price}}</li>
+            <li>Código:{{this.code}}</li>
+            <li>Stock:{{this.stock}}</li>
+        </ul>
+    </div>
+    {{/each}}
+{{/if}}
+

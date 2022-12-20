@@ -8,6 +8,8 @@ const router = Router()
 
 
 
+
+
 router.get('/', async (req, res)=>{
     
     const data = await fs.promises.readFile('../DB.json', "utf-8")
@@ -63,7 +65,9 @@ router.post('/', async ( req, res)=>{
         }
         arrayProducts.push(product)
         await fs.promises.writeFile('../DB.json', JSON.stringify(arrayProducts))
+        
         return res.send({status: "success", message:"Producto cargado correctamente"})
+
 
     }else{
         console.log('error')
