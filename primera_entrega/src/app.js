@@ -7,8 +7,7 @@ import viewsRouter from './routers/views.router.js'
 import { Server } from 'socket.io'
 import fs from 'fs'
 import { Server as serverHtttp } from 'http'
-
-
+import { dirname } from 'path'
 
 const app = express()
 app.use(express.json())
@@ -39,12 +38,14 @@ server.on('error', (error)=>{
 
 
 
-io.on('connection', async(socket) =>{
-    const data = await fs.promises.readFile('../DB.json', "utf-8")
+io.on('connection', async (socket) =>{
+    const data = await fs.promises.readFile( 'src/DB/DB.json', "utf-8")
     const listProducts = JSON.parse(data)
+    
     console.log( `New client connected, id:${socket.id}`)
     
     io.sockets.emit('productos', listProducts)
+   
 })
 
 

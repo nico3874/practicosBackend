@@ -2,6 +2,7 @@ import { Router } from "express";
 import fs from 'fs'
 
 
+
 const router = Router()
 
 
@@ -12,7 +13,7 @@ const router = Router()
 
 router.get('/', async (req, res)=>{
     
-    const data = await fs.promises.readFile('../DB.json', "utf-8")
+    const data = await fs.promises.readFile('src/DB/DB.json', "utf-8")
     const dataJson = JSON.parse(data)
     if (dataJson.length>0){
         const limit = req.query.limit
@@ -31,7 +32,7 @@ router.get('/', async (req, res)=>{
     
 router.get('/:id', async (req, res)=>{
     
-    const data = await fs.promises.readFile('../DB.json', "utf-8")
+    const data = await fs.promises.readFile('src/DB/DB.json', "utf-8")
     const dataJson = JSON.parse(data)
     const getId = req.params.id
     let count = 0
@@ -48,7 +49,7 @@ router.get('/:id', async (req, res)=>{
 
 router.post('/', async ( req, res)=>{
 
-    const data = await fs.promises.readFile('../DB.json', 'utf-8')
+    const data = await fs.promises.readFile('src/DB/DB.json', 'utf-8')
     const dataJason = JSON.parse(data)
     const arrayProducts = dataJason
     const nextId = ()=>{
@@ -64,8 +65,7 @@ router.post('/', async ( req, res)=>{
             product.id = nextId()
         }
         arrayProducts.push(product)
-        await fs.promises.writeFile('../DB.json', JSON.stringify(arrayProducts))
-        
+        await fs.promises.writeFile('src/DB/DB.json', JSON.stringify(arrayProducts))
         return res.send({status: "success", message:"Producto cargado correctamente"})
 
 
@@ -83,7 +83,7 @@ router.post('/', async ( req, res)=>{
 router.put('/:pid', async (req, res)=>{
     const newValue = req.body
     const pid = req.params.pid;
-    const data = await fs.promises.readFile('../DB.json', 'utf-8')
+    const data = await fs.promises.readFile('src/DB/DB.json', 'utf-8')
     const dataJson  = JSON.parse(data)
     let updateProduct = dataJson.filter(p=>p.id==pid) 
     updateProduct={...newValue, id:+pid}
@@ -93,14 +93,14 @@ router.put('/:pid', async (req, res)=>{
     });
     products.push(updateProduct)
     console.log(products)
-    await fs.promises.writeFile('../DB.json', JSON.stringify(products))
+    await fs.promises.writeFile('src/DB/DB.json', JSON.stringify(products))
     return res.send({status: "Success", message: "Producto actualizado correctamente"})
 
 })
 
 router.delete('/:pid', async (req, res)=>{
     const pid = req.params.pid
-    const data = await fs.promises.readFile('../DB.json', 'utf-8')
+    const data = await fs.promises.readFile('src/DB/DB.json', 'utf-8')
     const dataJson = JSON.parse(data)
     const products = []
     if(dataJson.length>0) {
@@ -108,7 +108,7 @@ router.delete('/:pid', async (req, res)=>{
             element.id != pid && products.push(element)
             
         });
-      await fs.promises.writeFile ('../DB.json', JSON.stringify(products))
+      await fs.promises.writeFile ('src/DB/DB.json', JSON.stringify(products))
       return res.send({status: 'success', message: "Producto eliminado satisfactoriamente"})  
     }else{
         return res.send({status: 'error', error: "ID no encontrado"})

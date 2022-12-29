@@ -3,10 +3,11 @@ import fs from 'fs'
 
 
 
+
 const router = Router()
 
 router.get('/', async (req, res)=>{
-    const data = await fs.promises.readFile('../DB.json', "utf-8")
+    const data = await fs.promises.readFile('src/DB/DB.json', "utf-8")
     const products = JSON.parse(data)
     
     
@@ -15,7 +16,10 @@ router.get('/', async (req, res)=>{
 })
 
 router.get('/realtimeproducts', (req, res)=>{
-    res.render('realTimeProducts', {})
+    
+        res.render('realTimeProducts')
+    
+    
 })
 
 

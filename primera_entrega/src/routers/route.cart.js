@@ -10,7 +10,7 @@ router.post('/', async (req, res)=>{
     
     let arrayCart = []
     
-    const data = await fs.promises.readFile('../carrito.json', 'utf-8')
+    const data = await fs.promises.readFile('src/DB/carrito.json', 'utf-8')
     if (data){ arrayCart = JSON.parse(data)}
     const nextId = ()=>{
         const count = arrayCart.length
@@ -25,7 +25,7 @@ router.post('/', async (req, res)=>{
 
     arrayCart.push(cart)
 
-    fs.promises.writeFile('../carrito.json', JSON.stringify(arrayCart))
+    fs.promises.writeFile('src/DB/carrito.json', JSON.stringify(arrayCart))
 
     res.send({status: 'succes', message: 'Carrito creado con éxito'})
     
@@ -33,7 +33,7 @@ router.post('/', async (req, res)=>{
 
 router.get('/:cid', async(req, res)=>{
     const cid = req.params.cid
-    const data = await fs.promises.readFile('../carrito.json', "utf-8")
+    const data = await fs.promises.readFile('src/DB/carrito.json', "utf-8")
     const dataJson = JSON.parse(data)
     let count = 0
     dataJson.forEach(element => {
@@ -47,7 +47,7 @@ router.get('/:cid', async(req, res)=>{
 router.post('/:cid/products/:pid', async(req, res)=>{
     const cid = req.params.cid
     const pid = req.params.pid
-    const data = await fs.promises.readFile('../carrito.json', "utf-8")
+    const data = await fs.promises.readFile('src/DB/carrito.json', "utf-8")
     const dataJson = JSON.parse(data)
     const newArray = []
     
@@ -77,7 +77,7 @@ router.post('/:cid/products/:pid', async(req, res)=>{
          
          newArray.push(cartSelect)
          
-         fs.promises.writeFile('../carrito.json', JSON.stringify(newArray))
+         fs.promises.writeFile('src/DB/carrito.json', JSON.stringify(newArray))
          return res.send({status:"Success", message:"Producto agregado correctamente"})
        
             
