@@ -7,7 +7,7 @@ import viewsRouter from './routers/views.router.js'
 import { Server } from 'socket.io'
 import fs from 'fs'
 import { Server as serverHtttp } from 'http'
-import { dirname } from 'path'
+import mongoose from 'mongoose'
 
 const app = express()
 app.use(express.json())
@@ -30,12 +30,22 @@ app.use('/api/carts', routerCart)
 app.use('/', viewsRouter)
 
 
-const server = httpServer.listen(8080, ()=>{console.log("Running server...")})
-server.on('error', (error)=>{
+
+
+
+
+mongoose.connect('mongodb+srv://nik3874:dHuhHFsdwNUGN4rD@cluster0.37pyhxm.mongodb.net/?retryWrites=true&w=majority',{dbName:'ecommerce'}, (error)=>{
+    if(error){
+        console.log('No se puede acceder a la base de datos')
+        return
+    }
+    console.log('DB conected!!!')
+    const server = httpServer.listen(8080, ()=>{console.log("Running server...")})
+    server.on('error', (error)=>{
     console.log(error)
 })
 
-
+})
 
 
 io.on('connection', async (socket) =>{

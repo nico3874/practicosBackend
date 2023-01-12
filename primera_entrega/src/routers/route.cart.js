@@ -1,11 +1,19 @@
 import { Router } from "express";
 import fs from 'fs'
+import cartsModel from "../dao/models/carts.model.js";
 
 
 
 const router = Router()
 
 router.post('/', async (req, res)=>{
+    const newCart = req.body
+    await cartsModel.create(newCart)
+    return res.send({message:'Carrito creado con éxito'})
+
+})
+
+/* router.post('/', async (req, res)=>{
     
     
     let arrayCart = []
@@ -29,7 +37,7 @@ router.post('/', async (req, res)=>{
 
     res.send({status: 'succes', message: 'Carrito creado con éxito'})
     
-})
+}) */
 
 router.get('/:cid', async(req, res)=>{
     const cid = req.params.cid
