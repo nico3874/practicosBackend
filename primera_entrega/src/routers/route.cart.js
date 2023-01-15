@@ -1,5 +1,7 @@
+import { count } from "console";
 import { Router } from "express";
 import fs from 'fs'
+import mongoose, { set } from "mongoose";
 import cartsModel from "../dao/models/carts.model.js";
 
 
@@ -39,7 +41,24 @@ router.post('/', async (req, res)=>{
     
 }) */
 
+
 router.get('/:cid', async(req, res)=>{
+    const cartId = req.params.cid
+    if(mongoose.isValidObjectId(cartId)){
+        const cart =  await cartsModel.findById(cartId)
+        console.log(cart.products[0].product)
+        res.status(200).send(cart)
+    }else{
+        res.status(500).send('El ID no es correcto o no existe')
+    }
+    
+    
+    
+    
+
+})
+
+/* router.get('/:cid', async(req, res)=>{
     const cid = req.params.cid
     const data = await fs.promises.readFile('src/DB/carrito.json', "utf-8")
     const dataJson = JSON.parse(data)
@@ -49,10 +68,57 @@ router.get('/:cid', async(req, res)=>{
     });
     count > 0 ? res.send(dataJson.find(p=>p.id==cid)) : res.send({status:'error', error: 'No existe ID'})
     
+}) */
+
+// Mongoose sends an `updateOne({ _id: doc._id }, { $set: { name: 'foo' } })`
+// to MongoDB.
+//await doc.save();
+
+router.post('/:cid/products/:pid', async (req, res)=>{
+    const cid = req.params.cid
+    const pid = req.params.pid
+    
+    const cart = await cartsModel.findById(cid)
+    
+    
+
+    cart.products.forEach(async(e)=>{
+        let productQuantity = e.quantity
+        
+       if(e.product == pid){
+        productQuantity++
+        await cartsModel.updateOne({_id:mongoose.Types.ObjectId(cid)}, {$set:{products: {product:pid, quantity:productQuantity}}})
+        res.send("Producto modificado correctamente")
+       } else{
+            const productUpdate = cart.products
+            console.log(productUpdate)
+            productUpdate.push({product:mongoose.Types.ObjectId(pid), quantity:1})
+            console.log(productUpdate)
+            await cartsModel.updateOne({_id:mongoose.Types.ObjectId(cid)}, {$set:{products: productUpdate}})
+            res.send('Nuevo producto agregado')        
+       };
+         
+
+       })
+        
+        
+        
+    
+
+    
+    
+    
+    
+    /* updateProducts.push({product:mongoose.Types.ObjectId(pid), quantity:1} )
+
+    await cartsModel.findByIdAndUpdate(cid, {products:updateProducts})
+    const newCart= await cartsModel.findById(cid)
+
+    res.send(newCart) */
+
 })
 
-
-router.post('/:cid/products/:pid', async(req, res)=>{
+/* router.post('/:cid/products/:pid', async(req, res)=>{
     const cid = req.params.cid
     const pid = req.params.pid
     const data = await fs.promises.readFile('src/DB/carrito.json', "utf-8")
@@ -96,6 +162,6 @@ router.post('/:cid/products/:pid', async(req, res)=>{
 
 
 })
-
+ */
 
 export default router
