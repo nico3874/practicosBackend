@@ -30,6 +30,15 @@ router.get('/realtimeproducts', (req, res)=>{
     
 })
 
+//Chat
+
+router.get('/chat', (req, res)=>{
+    
+    res.render('chat', {})
+
+
+})
+
 
 
 

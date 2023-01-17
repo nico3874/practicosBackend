@@ -46,7 +46,7 @@ router.get('/:cid', async(req, res)=>{
     const cartId = req.params.cid
     if(mongoose.isValidObjectId(cartId)){
         const cart =  await cartsModel.findById(cartId)
-        console.log(cart.products[0].product)
+        
         res.status(200).send(cart)
     }else{
         res.status(500).send('El ID no es correcto o no existe')
@@ -77,44 +77,36 @@ router.get('/:cid', async(req, res)=>{
 router.post('/:cid/products/:pid', async (req, res)=>{
     const cid = req.params.cid
     const pid = req.params.pid
-    
+    const newCartProduct = []
+
     const cart = await cartsModel.findById(cid)
+    console.log(cart)
+    let countProduct = 0
     
-    
+if(cart.products.length==0){
+    newCartProduct.push({product:pid, quantity:1});
+    countProduct++
+}
 
-    cart.products.forEach(async(e)=>{
-        let productQuantity = e.quantity
-        
-       if(e.product == pid){
-        productQuantity++
-        await cartsModel.updateOne({_id:mongoose.Types.ObjectId(cid)}, {$set:{products: {product:pid, quantity:productQuantity}}})
-        res.send("Producto modificado correctamente")
-       } else{
-            const productUpdate = cart.products
-            console.log(productUpdate)
-            productUpdate.push({product:mongoose.Types.ObjectId(pid), quantity:1})
-            console.log(productUpdate)
-            await cartsModel.updateOne({_id:mongoose.Types.ObjectId(cid)}, {$set:{products: productUpdate}})
-            res.send('Nuevo producto agregado')        
-       };
-         
+if(cart.products.length>0){
+    cart.products.forEach(element => {
+        element.product==pid && (element.quantity++, countProduct++);
+        newCartProduct.push(element)
 
-       })
-        
-        
-        
-    
+    });
+}
 
-    
-    
-    
-    
-    /* updateProducts.push({product:mongoose.Types.ObjectId(pid), quantity:1} )
+countProduct == 0 && newCartProduct.push({product:pid, quantity:1})
 
-    await cartsModel.findByIdAndUpdate(cid, {products:updateProducts})
-    const newCart= await cartsModel.findById(cid)
 
-    res.send(newCart) */
+
+
+
+ console.log(newCartProduct)   
+ await cartsModel.updateOne({_id:mongoose.Types.ObjectId(cid)}, {$set:{products: newCartProduct}})
+ res.status(200).send({message:'Carrito actualizado'}) 
+    
+   
 
 })
 
@@ -137,12 +129,6 @@ router.post('/:cid/products/:pid', async (req, res)=>{
         });
 
         count == 0 && cartSelect.products.push({product:+pid, quantity:1})
-
-
-
-       
-
-
          
          
          dataJson.forEach(element => {

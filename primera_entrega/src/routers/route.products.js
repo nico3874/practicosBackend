@@ -3,6 +3,7 @@ import { Router } from "express";
 import fs from 'fs'
 import mongoose from "mongoose";
 import { type } from "os";
+import cartsModel from "../dao/models/carts.model.js";
 import productsModel from "../dao/models/products.model.js";
 
 
@@ -35,9 +36,20 @@ router.get('/', async (req, res)=>{
     })
 
 
-
+router.get('/:id', async(req, res)=>{
+    const idQuery = req.params.id
+    if(mongoose.isValidObjectId(idQuery)){
+        const product = await productsModel.findOne({_id:mongoose.Types.ObjectId(idQuery)})
+        console.log(product)
+        product == null ? res.send('No existe el producto'):
+        res.status(200).send(product)
+    }else{
+        res.send('Error en el ID')
+    }
     
-router.get('/:id', async (req, res)=>{
+})
+    
+/* router.get('/:id', async (req, res)=>{
     const listProduct = await dataList.getProducts()
     const getId = req.params.id
     let count = 0
@@ -49,7 +61,7 @@ router.get('/:id', async (req, res)=>{
     
     
     
-    })
+    }) */
 
     router.post('/', async (req, res)=>{
         const product = req.body
@@ -96,7 +108,9 @@ router.get('/:id', async (req, res)=>{
 router.put('/:id', async (req, res)=>{
     const idQuery = req.params.id
     const productUpdate = req.body
-    await productsModel.updateOne({_id: mongoose.Types.ObjectId(idQuery)}, productUpdate)
+    
+    if ( mongoose.isValidObjectId(idQuery)){
+        await productsModel.updateOne({_id: mongoose.Types.ObjectId(idQuery)}, productUpdate)
 
     try {
         
@@ -105,6 +119,12 @@ router.put('/:id', async (req, res)=>{
     } catch (error) {
         return res.status(500).send({messagge:"Error"})
     }
+    }else{
+        res.send('El formato del producto es inválido')
+    }
+        
+
+    
     
     
 
@@ -131,14 +151,20 @@ router.put('/:id', async (req, res)=>{
 
 router.delete('/:id', async (req, res)=>{
     const idQuery = req.params.id
-    try {
-        await productsModel.deleteOne({_id: mongoose.Types.ObjectId(idQuery)})
-        res.status(200).send({messagge:'Realizado correctamente'})
-        
-    } catch (error) {
-        res.status(500).send({mesage:'no se pudo borrar el elemento'})
-        
+
+    if(mongoose.isValidObjectId(idQuery)){
+        try {
+            await productsModel.deleteOne({_id: mongoose.Types.ObjectId(idQuery)})
+            res.status(200).send({messagge:'Realizado correctamente'})
+            
+        } catch (error) {
+            res.status(500).send({mesage:'no se pudo borrar el elemento'})
+            
+        }
+    } else{
+        res.send('El formato del producto es inválido')
     }
+    
     
             
         

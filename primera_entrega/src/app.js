@@ -8,6 +8,7 @@ import { Server } from 'socket.io'
 import fs from 'fs'
 import { Server as serverHtttp } from 'http'
 import mongoose from 'mongoose'
+import chatModel from './dao/models/chat.model.js'
 
 const app = express()
 app.use(express.json())
@@ -57,6 +58,33 @@ io.on('connection', async (socket) =>{
     io.sockets.emit('productos', listProducts)
    
 })
+
+//Chat desde el lado del servidor
+
+let messages = []
+
+
+io.on ('connection', socket =>{
+    console.log('New client connected');
+
+    socket.on('authenticated', async(data) =>{
+        io.emit('newLogin', data)
+        
+        await chatModel.create({user:data, message:[]})
+    })
+
+    socket.on('message',async (data)=>{
+        console.log(data);
+        messages.push(data)
+        console.log(data)
+        await chatModel.updateOne({user:data.user}, {$set:{message:messages}})
+
+        io.emit('messageLogs', messages)
+    })
+
+    
+    
+})  
 
 
 
