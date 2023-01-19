@@ -21,7 +21,7 @@ router.post('/', async (req, res)=>{
 router.get('/:cid', async(req, res)=>{
     const cartId = req.params.cid
     if(mongoose.isValidObjectId(cartId)){
-        const cart =  await cartsModel.find({_id:mongoose.Types.ObjectId(cartId)}).populate('products.product')
+        const cart =  await cartsModel.find({_id:mongoose.Types.ObjectId(cartId)})
         
         res.status(200).send(cart)
     }else{
