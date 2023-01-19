@@ -9,6 +9,8 @@ import fs from 'fs'
 import { Server as serverHtttp } from 'http'
 import mongoose from 'mongoose'
 import chatModel from './dao/models/chat.model.js'
+import fsProduct from './routers/fsProducts.router.js'
+import fsCart from './routers/fsCarts.js'
 
 const app = express()
 app.use(express.json())
@@ -29,6 +31,8 @@ app.use(express.static(__dirname + '/public'))
 app.use('/api/products', routerProduct )
 app.use('/api/carts', routerCart)
 app.use('/', viewsRouter)
+app.use('/api/products/fs', fsProduct)
+app.use('/api/carts/fs', fsCart)
 
 
 
@@ -74,7 +78,7 @@ io.on ('connection', socket =>{
     })
 
     socket.on('message',async (data)=>{
-        console.log(data);
+        
         messages.push(data)
         console.log(data)
         await chatModel.updateOne({user:data.user}, {$set:{message:messages}})

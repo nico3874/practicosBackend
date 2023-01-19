@@ -109,4 +109,4 @@ const producsList = new ProductManager()
 
 /* module.exports = ProductManager */
 
-/* export default ProductManager */
+export default ProductManager
