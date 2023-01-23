@@ -11,10 +11,37 @@ import mongoose from 'mongoose'
 import chatModel from './dao/models/chat.model.js'
 import fsProduct from './routers/fsProducts.router.js'
 import fsCart from './routers/fsCarts.js'
+import routerSessions from './routers/sessions.router.js'
+import MongoStore from 'connect-mongo'
+import session from 'express-session'
 
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+
+//Configurando sessions
+
+app.use(session({
+    store:MongoStore.create({
+        mongoUrl: 'mongodb+srv://nik3874:dHuhHFsdwNUGN4rD@cluster0.37pyhxm.mongodb.net/?retryWrites=true&w=majority',
+        dbName: 'ecommerceSessions',
+        mongoOptions:{
+            useNewUrlParser:true,
+            useUnifiedTopology:true
+        },
+        ttl:120,
+        
+    }),
+    resave:true,
+    secret: 'registeruser',
+    saveUninitialized:true
+
+    
+}))
+
+
+
+
 
 const httpServer = new serverHtttp(app)
 const io = new Server(httpServer)
@@ -33,9 +60,10 @@ app.use('/api/carts', routerCart)
 app.use('/', viewsRouter)
 app.use('/api/products/fs', fsProduct)
 app.use('/api/carts/fs', fsCart)
+app.use('/sessions', routerSessions)
 
 
-
+mongoose.set('strictQuery', false)
 
 
 
