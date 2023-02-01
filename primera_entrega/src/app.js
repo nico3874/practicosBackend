@@ -14,6 +14,8 @@ import fsCart from './routers/fsCarts.js'
 import routerSessions from './routers/sessions.router.js'
 import MongoStore from 'connect-mongo'
 import session from 'express-session'
+import initPass from './config/passport.config.js'
+import passport from 'passport'
 
 const app = express()
 app.use(express.json())
@@ -40,7 +42,11 @@ app.use(session({
 }))
 
 
+//Inicializamos los middleware de passport
 
+initPass()
+app.use(passport.initialize())
+app.use(passport.session())
 
 
 const httpServer = new serverHtttp(app)
