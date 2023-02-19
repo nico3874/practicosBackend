@@ -3,10 +3,23 @@ import local from 'passport-local'
 import usersModel from '../dao/models/users.model.js'
 import { isValidPassword, createHash } from '../utils.js'
 import GitHubStrategy from 'passport-github2'
+import jwt from 'passport-jwt'
+import { PRIVATE_KEY } from './credentials.js'
+import { generateToken } from '../utils.js'
 
 // Registro y Login con estrategia local
 
 const LocalStrategy = local.Strategy
+const JWTStrategy = jwt.Strategy
+
+const cookieExtractor = req => {
+    let token = null
+    if(req && req.cookies){
+        token = req.cookies['userToken']
+    }
+    
+    return token
+}
 
 const initPass = ()=>{
 
@@ -16,7 +29,7 @@ passport.use('register', new LocalStrategy({
 },
 async(req, username, password, done)=>{
     const {name, lastName, email, age} = req.body
-    console.log(req.body)
+    
 
     try {
         const user = await usersModel.findOne({email:username})
@@ -46,13 +59,20 @@ async(req, username, password, done)=>{
             
             try {
                 const user = await usersModel.findOne({email:username})
-                console.log(user)
+                
                 if(!user){
                     console.error('Usuario no existe')
                     return done (null, false)
                 }
                 if(!isValidPassword(user, password)) return done(null, false)
+                
+                const acces_token = generateToken(user)
+                user.token = acces_token
+                
+                
+
                 return done(null, user)
+                
             } catch (error) {
                 return done(error)
             }
@@ -95,6 +115,22 @@ async(req, username, password, done)=>{
         }
     }
 
+    ))
+
+    //JWT Strategy
+
+    passport.use('jwt', new JWTStrategy({
+        jwtFromRequest: jwt.ExtractJwt.fromExtractors([cookieExtractor]),
+        secretOrKey: PRIVATE_KEY
+
+    }, async (jwt_payload, done)=>{
+        try {
+            
+            return done (null, jwt_payload)
+        } catch (error) {
+            return done (error)
+        }
+    }
     ))
 
     passport.serializeUser((user, done)=>{

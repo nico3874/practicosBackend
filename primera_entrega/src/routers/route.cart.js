@@ -3,19 +3,23 @@ import { Router } from "express";
 import fs from 'fs'
 import mongoose, { set } from "mongoose";
 import cartsModel from "../dao/models/carts.model.js";
+import usersModel from "../dao/models/users.model.js";
+import { passportCall } from "../utils.js";
 
 
 
 const router = Router()
 
-router.post('/', async (req, res)=>{
+router.post('/',passportCall('jwt'), async (req, res)=>{
     const newCart = req.body
-    await cartsModel.create(newCart)
+    const cartSave = await cartsModel.create(newCart)
+    await usersModel.updateOne({_id:mongoose.Types.ObjectId(req.user.user._id)}, {$set:{cartId:cartSave._id}})
+    
     return res.send({message:'Carrito creado con éxito'})
 
 })
 
-/
+
 
 
 router.get('/:cid', async(req, res)=>{

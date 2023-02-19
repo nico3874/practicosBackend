@@ -9,7 +9,23 @@ const usersSchema = mongoose.Schema({
     age:Number,
     email:String,
     password:String,
-    rol:String
+    role:{
+        type:String,
+        default:'user'
+    },
+    cartId:{
+        
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'carts',
+        
+        
+    },
+    
+    
+})
+
+usersSchema.pre('find', function(){
+    this.populate('carts')
 })
 
 const usersModel = mongoose.model(usersCollection, usersSchema)

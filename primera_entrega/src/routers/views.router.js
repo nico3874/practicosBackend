@@ -5,6 +5,8 @@ import productsModel from "../dao/models/products.model.js";
 import cartsModel from "../dao/models/carts.model.js";
 import { auth } from "./sessions.router.js";
 import session from "express-session";
+import passport from "passport";
+import { passportCall } from "../utils.js";
 
 
 
@@ -19,12 +21,11 @@ router.get('/',auth, async (req, res)=>{
 
 //Mostrar productos con su paginación
 
-router.get('/products',auth, async(req,res)=>{
-
+router.get('/products',passportCall('jwt'), async(req,res)=>{
+    console.log(req.user)
     let page = +(req.query.page)
     if (!page) page = 1
-    const userId = 1234
-    const userName = req.session.user.name
+    
     
     const products = await productsModel.paginate({}, {page:page, limit:3, lean:true})
     
@@ -33,8 +34,29 @@ router.get('/products',auth, async(req,res)=>{
     products.prevLink = products.hasPrevPage ? `/products?page=${products.PrevPage}`: '';
     products.nextLink = products.hasNextPage ? `/products?page=${products.nextPage}`: '';
     products.isValid = !(page <=0 || page > products.totalPages)
-    products.userName = req.session.user.name
-    products.userId = req.session.user._id
+    products.userName = req.user.user.name
+    products.userId = req.user.user._id
+    
+    res.render('products', products)
+    
+
+})
+
+router.get('/github/products', async(req,res)=>{
+    console.log(req.user)
+    let page = +(req.query.page)
+    if (!page) page = 1
+    
+    
+    const products = await productsModel.paginate({}, {page:page, limit:3, lean:true})
+    
+    
+    //Aquí creo los enlaces que me van a servir para utilizar en la vista y mover las páginas esto va en una etiqueta <a src="prevLink">
+    products.prevLink = products.hasPrevPage ? `/products?page=${products.PrevPage}`: '';
+    products.nextLink = products.hasNextPage ? `/products?page=${products.nextPage}`: '';
+    products.isValid = !(page <=0 || page > products.totalPages)
+    products.userName = req.user.user.name
+    products.userId = req.user.user._id
     
     res.render('products', products)
     
@@ -46,7 +68,7 @@ router.get('/products',auth, async(req,res)=>{
 
 //Mostramos un producto específico 
 
-router.get('/products/:pid',auth, async(req, res)=>{
+router.get('/products/:pid',passportCall('jwt'), async(req, res)=>{
     const productParam = req.params.pid
     const product = await productsModel.findOne({_id:mongoose.Types.ObjectId(productParam)})
     res.render('productDetail', product)
@@ -62,7 +84,7 @@ router.get('/products/:pid',auth, async(req, res)=>{
     res.render('home', {products})
 }) */
 
-router.get('/realtimeproducts',auth, (req, res)=>{
+router.get('/realtimeproducts',passportCall('jwt'), (req, res)=>{
     
         res.render('realTimeProducts')
     
@@ -80,7 +102,7 @@ router.get('/chat', (req, res)=>{
 
 //Ver carrito completo
 
-router.get('/cart/:cid',auth, async(req, res)=>{
+router.get('/cart/:cid',passportCall('jwt'), async(req, res)=>{
     const cartParam = req.params.cid
     const cart = await cartsModel.find({_id:mongoose.Types.ObjectId(cartParam)}).lean() //Utilizar lean() para que handlebars reciba un objeto tipo json
   

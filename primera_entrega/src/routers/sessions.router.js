@@ -1,6 +1,8 @@
 import { Router } from "express";
+import { Cookie } from "express-session";
 import passport from "passport";
 import usersModel from "../dao/models/users.model.js";
+import { generateToken } from "../utils.js";
 /* import session from "express-session";
 import { get } from "mongoose"; */
 
@@ -78,10 +80,11 @@ router.get('/login', (req, res)=>{
 //Login con passport y estrategia local
 
 router.post('/login', passport.authenticate('login', {failureRedirect:'/sessions/failedLogin'}), (req, res)=>{
-    console.log(req.body)
-    req.session.user = req.user
+    
+    /* req.session.user = req.user */ // Esto es en caso de utilizar Sessions
 
-    res.redirect('/products')
+    res.cookie('userToken', req.user.token).redirect('/products')
+
 })
 
 //Respuesta al error de Login 
@@ -100,13 +103,15 @@ router.get('/login-github', passport.authenticate('github', {scope: ['user:email
 router.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/sessions/login'}), (req, res)=>{
     console.log('verificación: '+req.user)
     req.session.user = req.user
-    res.redirect('/products')
+    res.redirect('/github/products')
 })
 
 
 router.get('/logout', (req, res)=>{
+    
+    
     req.session.destroy(err=>{console.log(err)})
-    res.redirect('/sessions/login')
+    res.clearCookie('userToken').redirect('/sessions/login')
 })
 
 

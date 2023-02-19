@@ -1,0 +1,1 @@
+export const PRIVATE_KEY = 'DHJSHJAhdjhd873847%%%))))((retrb65467gfhjtr7'
