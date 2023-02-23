@@ -17,11 +17,14 @@ import session from 'express-session'
 import initPass from './config/passport.config.js'
 import passport from 'passport'
 import cookieParser from 'cookie-parser'
+import URI_MONGO from './config/credentials.js'
+
 
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(cookieParser())
+
 
 //Configurando sessions
 
@@ -35,7 +38,7 @@ app.use(session({
         },
         ttl:120,
         
-    }),
+    }), 
     resave:true,
     secret: 'registeruser',
     saveUninitialized:true

@@ -1,10 +1,10 @@
 import passport from 'passport'
 import local from 'passport-local'
 import usersModel from '../dao/models/users.model.js'
-import { isValidPassword, createHash } from '../utils.js'
+import { isValidPassword, createHash, cookieExtractor } from '../utils.js'
 import GitHubStrategy from 'passport-github2'
 import jwt from 'passport-jwt'
-import { PRIVATE_KEY } from './credentials.js'
+import  PRIVATE_KEY  from './credentials.js'
 import { generateToken } from '../utils.js'
 
 // Registro y Login con estrategia local
@@ -12,14 +12,7 @@ import { generateToken } from '../utils.js'
 const LocalStrategy = local.Strategy
 const JWTStrategy = jwt.Strategy
 
-const cookieExtractor = req => {
-    let token = null
-    if(req && req.cookies){
-        token = req.cookies['userToken']
-    }
-    
-    return token
-}
+
 
 const initPass = ()=>{
 
@@ -121,7 +114,7 @@ async(req, username, password, done)=>{
 
     passport.use('jwt', new JWTStrategy({
         jwtFromRequest: jwt.ExtractJwt.fromExtractors([cookieExtractor]),
-        secretOrKey: PRIVATE_KEY
+        secretOrKey: `${PRIVATE_KEY}`
 
     }, async (jwt_payload, done)=>{
         try {

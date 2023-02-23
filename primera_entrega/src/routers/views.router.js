@@ -7,12 +7,16 @@ import { auth } from "./sessions.router.js";
 import session from "express-session";
 import passport from "passport";
 import { passportCall } from "../utils.js";
+import ViewsController from "../controllers/views.controller.js";
+import URI_MONGO from '../config/credentials.js'
+import PRIVATE_KEY from '../config/credentials.js'
 
 
 
 const router = Router()
 
-router.get('/',auth, async (req, res)=>{
+router.get('/', async (req, res)=>{
+    console.log(process.env.NODE_ENV)
     const products = await productsModel.find().lean().exec()
     res.render('home', {products})
     
@@ -22,7 +26,9 @@ router.get('/',auth, async (req, res)=>{
 //Mostrar productos con su paginación
 
 router.get('/products',passportCall('jwt'), async(req,res)=>{
-    console.log(req.user)
+    const controller = new ViewsController ('products', productsModel)
+    controller.getProduct(req, res)
+    /* console.log(req.user)
     let page = +(req.query.page)
     if (!page) page = 1
     
@@ -37,7 +43,7 @@ router.get('/products',passportCall('jwt'), async(req,res)=>{
     products.userName = req.user.user.name
     products.userId = req.user.user._id
     
-    res.render('products', products)
+    res.render('products', products) */
     
 
 })

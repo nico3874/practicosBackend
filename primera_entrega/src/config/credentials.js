@@ -1,1 +1,13 @@
-export const PRIVATE_KEY = 'DHJSHJAhdjhd873847%%%))))((retrb65467gfhjtr7'
+import { config } from "dotenv"
+
+config()
+
+
+export default {
+    PRIVATE_KEY : process.env.PRIVATE_KEY,
+    URI_MONGO : process.env.URI_MONGO
+}
+
+
+
+

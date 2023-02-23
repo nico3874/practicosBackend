@@ -2,7 +2,8 @@ import {fileURLToPath } from 'url'
 import {dirname} from 'path'
 import bycrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { PRIVATE_KEY } from './config/credentials.js'
+import PRIVATE_KEY from './config/credentials.js'
+
 import passport from 'passport'
 ///Esto es para las rutas relativas
 
@@ -22,7 +23,8 @@ export const isValidPassword = (user, password)=>{
 }
 
 export const generateToken = (user)=>{
-   const token =  jwt.sign({user}, PRIVATE_KEY, {expiresIn:'24h'})
+   const token =  jwt.sign({user}, `${PRIVATE_KEY}`, {expiresIn:'24h'})
+   
    return token
 }
 
@@ -58,4 +60,13 @@ export const passportCall = (strategy) => { // Se le pasa la strategy para poder
             next()
         })(req, res, next)
     }
+}
+
+export const cookieExtractor = req => {
+    let token = null
+    if(req && req.cookies){
+        token = req.cookies['userToken']
+    }
+    
+    return token
 }
